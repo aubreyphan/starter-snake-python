@@ -57,12 +57,13 @@ def move():
     data = json.loads(json.dumps(bottle.request.json))
 
     head = data["you"]["body"][0]
+    body = data["you"]["body"]
     closest_candy = Utils.fetch_closest_candy(data["board"]["food"], head)
 
     print('head', head)
     print('closest_candy', closest_candy)
 
-    return move_response(Utils.get_next_move(head, closest_candy))
+    return move_response(Utils.get_next_move2(body, closest_candy))
 
 
 @bottle.post('/end')

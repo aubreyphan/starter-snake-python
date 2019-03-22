@@ -44,3 +44,92 @@ class Utils:
         else:
             directions = ['up', 'down', 'left', 'right']
             return random.choice(directions)
+
+    @staticmethod
+    def get_next_move2(body: List, target: Dict):
+        head = body[0]
+        body_no_tail = body[1:len(body)-1]
+
+        if head["x"] != target["x"]:
+            # Check for fastest x move
+            fast_x = Utils.get_fast_x(head, target, body_no_tail)
+            if fast_x:
+                return fast_x
+            # If we can't go there check for fastest y move
+            fast_y = Utils.get_fast_y(head, target, body_no_tail)
+            if fast_y:
+                return fast_y
+            # If we can't go there check for slowest x move
+            slow_x = Utils.get_slow_x(head, target, body_no_tail)
+            if slow_x:
+                return slow_x
+            # If we can't go there go slowest y move
+            slow_y = Utils.get_slow_y(head, target, body_no_tail)
+            if slow_y:
+                return slow_y
+
+        else:
+            # If we can't go there check for fastest y move
+            fast_y = Utils.get_fast_y(head, target, body_no_tail)
+            if fast_y:
+                return fast_y
+
+            # If we can't go there go slowest y move
+            slow_y = Utils.get_slow_y(head, target, body_no_tail)
+            if slow_y:
+                return slow_y
+
+            # Check for fastest x move
+            fast_x = Utils.get_fast_x(head, target, body_no_tail)
+            if fast_x:
+                return fast_x
+
+            # If we can't go there check for slowest x move
+            slow_x = Utils.get_slow_x(head, target, body_no_tail)
+            if slow_x:
+                return slow_x
+
+
+        directions = ['up', 'down', 'left', 'right']
+        return random.choice(directions)
+
+    @staticmethod
+    def get_fast_x(head: Dict, target: Dict, body_no_tail: List[Dict]):
+        x_direction = {1: "right", -1: "left"}
+
+        fast_x = 1 if head["x"] < target["x"] else -1
+        if Utils.is_cell_available({"x": head["x"] + fast_x, "y": head["y"]}, body_no_tail):
+            return x_direction[fast_x]
+        return None
+
+    @staticmethod
+    def get_slow_x(head: Dict, target: Dict, body_no_tail: List[Dict]):
+        x_direction = {1: "right", -1: "left"}
+
+        fast_x = 1 if head["x"] > target["x"] else -1
+        if Utils.is_cell_available({"x": head["x"] + fast_x, "y": head["y"]}, body_no_tail):
+            return x_direction[fast_x]
+        return None
+
+    @staticmethod
+    def get_fast_y(head: Dict, target: Dict, body_no_tail: List[Dict]):
+        y_direction = {1: "down", -1: "up"}
+        fast_y = 1 if head["y"] < target["y"] else -1
+        if Utils.is_cell_available({"x": head["x"], "y": head["y"]+fast_y}, body_no_tail):
+            return y_direction[fast_y]
+        return None
+
+    @staticmethod
+    def get_slow_y(head: Dict, target: Dict, body_no_tail: List[Dict]):
+        y_direction = {1: "down", -1: "up"}
+        fast_y = 1 if head["y"] > target["y"] else -1
+        if Utils.is_cell_available({"x": head["x"], "y": head["y"]+fast_y}, body_no_tail):
+            return y_direction[fast_y]
+        return None
+
+    @staticmethod
+    def is_cell_available(cell: Dict, body: List[Dict]):
+        for bit in body:
+            if bit["x"] == cell["x"] and bit["y"] == cell["y"]:
+                return False
+        return True
