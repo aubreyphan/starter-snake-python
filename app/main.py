@@ -1,7 +1,7 @@
 import json
 import os
-import random
 import bottle
+from utils import Utils
 
 from api import ping_response, start_response, move_response, end_response
 
@@ -48,18 +48,21 @@ def start():
 
 @bottle.post('/move')
 def move():
-    data = bottle.request.json
 
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
 
-    directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
+    data = json.loads(json.dumps(bottle.request.json))
 
-    return move_response(direction)
+    head = data["you"]["body"][0]
+    closest_candy = Utils.fetch_closest_candy(data["board"]["food"], head)
+
+    print('head', head)
+    print('closest_candy', closest_candy)
+
+    return move_response(Utils.get_next_move(head, closest_candy))
 
 
 @bottle.post('/end')
